@@ -18,11 +18,10 @@ return new class extends Migration
             $table->enum('priority', ['Low', 'Medium','High'])->default('Low');
             $table->enum('status', ['Pending', 'In Progress', 'Completed'])->default('Pending');
             $table->date('deadline')->nullable();
-            $table->unsignedBigInteger('assigned_to');
-            $table->unsignedBigInteger('created_by');
 
-            $table->foreign('assigned_to')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('assigned_to')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
+
             $table->timestamps();
 
 

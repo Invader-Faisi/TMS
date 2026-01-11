@@ -14,17 +14,20 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+
+    Route::resource('tasks', \App\Http\Controllers\TaskController::class)->only(['index','show', 'create', 'store', 'update', 'destroy']);
+
     Route::middleware(['role:Admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/admin/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
         Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
     });
 
     Route::middleware(['role:Manager'])->prefix('manager')->name('manager.')->group(function () {
-        Route::get('/manager/dashboard', fn () => view('manager.dashboard'))->name('dashboard');
+        Route::get('/manager/dashboard', [\App\Http\Controllers\Manager\DashboardController::class, 'index'])->name('dashboard');
     });
 
     Route::middleware(['role:Member'])->prefix('member')->name('member.')->group(function () {
-        Route::get('/member/dashboard', fn () => view('member.dashboard'))->name('dashboard');
+        Route::get('/member/dashboard', [\App\Http\Controllers\Member\DashboardController::class, 'index'])->name('dashboard');
     });
 
 });

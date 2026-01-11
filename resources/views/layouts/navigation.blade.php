@@ -5,10 +5,14 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
+                    <a href="/">
+                        <x-application-logo class="w-12 h-12 fill-current text-gray-500" />
+                    </a>
                         <h2 class="text-5xl font-bold text-indigo-600">TMS</h2>
                 </div>
 
                 <!-- Navigation Links -->
+                @if(auth()->user()->isAdmin())
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
                         {{ __('Dashboard') }}
@@ -20,6 +24,23 @@
                         {{ __('Users') }}
                     </x-nav-link>
                 </div>
+                @endif
+
+                @if(auth()->user()->isManager())
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('manager.dashboard')" :active="request()->routeIs('manager.dashboard')">
+                        {{ __('Dashboard') }}
+                    </x-nav-link>
+                </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('tasks.index')" :active="request()->routeIs('tasks.*')">
+                        Tasks
+                    </x-nav-link>
+                </div>
+                @endif
+
+
             </div>
 
             <!-- Settings Dropdown -->
