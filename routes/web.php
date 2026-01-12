@@ -23,10 +23,13 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:Admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/admin/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
         Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+        Route::get('/reports', [\App\Http\Controllers\ReportController::class, 'index'])->name('reports.index');
+        Route::get('/reports/export', [\App\Http\Controllers\ReportController::class, 'exportCsv'])->name('reports.export');
     });
 
     Route::middleware(['role:Manager'])->prefix('manager')->name('manager.')->group(function () {
         Route::get('/manager/dashboard', [\App\Http\Controllers\Manager\DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/reports', [\App\Http\Controllers\ReportController::class, 'index'])->name('reports.index');
     });
 
     Route::middleware(['role:Member'])->prefix('member')->name('member.')->group(function () {
