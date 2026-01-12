@@ -34,10 +34,14 @@ class DashboardController extends Controller
         $overdueTasks = $tasks->where('status', '!=', 'Completed')
             ->where('deadline', '<', now());
 
+        // Notifications
+        $notifications = auth()->user()->unreadNotifications()->latest()->take(10)->get();
+
         return view('member.dashboard', compact(
             'tasks',
             'stats',
-            'overdueTasks'
+            'overdueTasks',
+            'notifications',
         ));
     }
 }

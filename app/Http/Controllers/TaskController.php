@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use App\Models\User;
+use App\Notifications\TaskAssignedNotification;
+use App\Notifications\TaskUpdatedNotification;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -50,7 +52,7 @@ class TaskController extends Controller
             'assigned_to' => 'required|exists:users,id',
         ]);
 
-        Task::create([
+        $task = Task::create([
             'title' => $request->title,
             'description' => $request->description,
             'priority' => $request->priority,
@@ -58,6 +60,9 @@ class TaskController extends Controller
             'assigned_to' => $request->assigned_to,
             'created_by' => Auth::id(),
         ]);
+
+        $member = User::find($task->assigned_to);
+        $member->notify(new TaskAssignedNotification($task));
 
         return redirect()->route('tasks.index')->with('toastr', [
             'type' => 'success',
@@ -94,6 +99,14 @@ class TaskController extends Controller
             'status' => $request->status,
             'description' => $request->description
         ]);
+
+        if ($task->assigned_to) {
+            $member = User::find($task->assigned_to);
+
+            if ($member) {
+                $member->notify(new TaskUpdatedNotification($task));
+            }
+        }
 
         return back()->with('toastr', [
             'type' => 'success',

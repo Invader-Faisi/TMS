@@ -16,6 +16,9 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::resource('tasks', \App\Http\Controllers\TaskController::class)->only(['index','show', 'create', 'store', 'update', 'destroy']);
+    Route::post('/notifications/read/{id}', function ($id) {
+        auth()->user()->notifications()->where('id', $id)->update(['read_at' => now()]);
+        return back();})->name('notifications.read');
 
     Route::middleware(['role:Admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/admin/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');

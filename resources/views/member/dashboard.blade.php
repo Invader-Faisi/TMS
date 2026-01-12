@@ -1,18 +1,62 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800">
-            Member Dashboard
-        </h2>
+        <div class="flex items-center justify-between">
+            <h2 class="font-semibold text-xl text-gray-800">
+                Member Dashboard
+            </h2>
+
+            {{-- Notification Bell --}}
+            <div class="relative">
+                <a href="#notifications" class="relative inline-flex items-center">
+                    🔔
+                    @if(auth()->user()->unreadNotifications->count())
+                        <span
+                            class="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                        {{ auth()->user()->unreadNotifications->count() }}
+                    </span>
+                    @endif
+                </a>
+            </div>
+        </div>
     </x-slot>
 
+
     <div class="py-12">
+        {{-- Notifications --}}
+        <div id="notifications" class="max-w-7xl mx-auto mb-6">
+            @forelse($notifications as $notification)
+                <div class="p-4 mb-3 rounded border bg-blue-50 border-blue-300 flex justify-between">
+                    <div>
+                        <p class="font-semibold">
+                            {{ $notification->data['title'] }}
+                        </p>
+                        <p class="text-sm">
+                            {{ $notification->data['message'] }}
+                        </p>
+                        <p class="text-xs text-gray-500">
+                            Deadline: {{ $notification->data['deadline'] ?? '—' }}
+                        </p>
+                    </div>
+
+                    <form method="POST" action="{{ route('notifications.read', $notification->id) }}">
+                        @csrf
+                        <button class="text-xs text-blue-700 hover:underline">
+                            Mark as Read
+                        </button>
+                    </form>
+                </div>
+            @empty
+                <p class="text-gray-500">No new notifications</p>
+            @endforelse
+        </div>
+
 
         {{-- Overdue Alert --}}
         @if($overdueTasks->count())
             <div class="max-w-7xl mx-auto mb-6">
                 <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded">
                     <p class="font-semibold text-red-700">
-                        ⚠ You have {{ $overdueTasks->count() }} overdue task(s)
+                        You have {{ $overdueTasks->count() }} overdue task(s)
                     </p>
                 </div>
             </div>

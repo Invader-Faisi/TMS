@@ -32,7 +32,7 @@ class DashboardController extends Controller
         return view('manager.dashboard', compact(
             'tasks',
             'stats',
-            'overdueTasks'
+            'overdueTasks',
         ));
     }
 }
